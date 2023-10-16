@@ -1,0 +1,75 @@
+firebase login
+firebase crud
+
+# create /add
+void addData() {
+    FirebaseFirestore.instance
+        .collection('your_collection_name')
+        .add({'field1': 'value1', 'field2': 'value2'})
+        .then((value) {
+      print('Data added successfully');
+    }).catchError((error) {
+      print('Error adding data: $error');
+    });
+  }
+
+#Read
+StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('your_collection_name').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return CircularProgressIndicator();
+          }
+          var documents = snapshot.data!.docs;
+          return ListView.builder(
+            itemCount: documents.length,
+            itemBuilder: (context, index) {
+              var document = documents[index];
+              return ListTile(
+                title: Text(document['field1']),
+                subtitle: Text(document['field2']),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(onPressed: (){
+
+                     updateData(document.id,{'field1': 'maringmei', 'field2': '1123123'});
+                    }, icon: Icon(Icons.update)),
+                    IconButton(onPressed: (){
+                     deleteData(document.id);
+                    }, icon: Icon(Icons.delete)),
+                  ],
+                ),
+                // Add update and delete buttons here
+              );
+            },
+          );
+        },
+      ),
+
+#update
+ void updateData(String documentId, Map<String, dynamic> newData) {
+    FirebaseFirestore.instance
+        .collection('your_collection_name')
+        .doc(documentId)
+        .update(newData)
+        .then((value) {
+      print('Data updated successfully');
+    }).catchError((error) {
+      print('Error updating data: $error');
+    });
+  }
+
+#delete
+  void deleteData(String documentId) {
+    FirebaseFirestore.instance
+        .collection('your_collection_name')
+        .doc(documentId)
+        .delete()
+        .then((value) {
+      print('Data deleted successfully');
+    }).catchError((error) {
+      print('Error deleting data: $error');
+    });
+  }
+#at
